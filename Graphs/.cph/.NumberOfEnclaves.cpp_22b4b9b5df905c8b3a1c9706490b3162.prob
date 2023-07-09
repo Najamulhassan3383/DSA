@@ -1,0 +1,1 @@
+{"name":"Local: NumberOfEnclaves","url":"/home/najam/Desktop/New Folder/Graphs/NumberOfEnclaves.cpp","tests":[{"id":1688916715398,"input":"5 4\n0 0 0 1\n0 1 1 0\n0 1 1 0\n0 0 0 1\n0 1 1 0","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/najam/Desktop/New Folder/Graphs/NumberOfEnclaves.cpp","group":"local","local":true}
