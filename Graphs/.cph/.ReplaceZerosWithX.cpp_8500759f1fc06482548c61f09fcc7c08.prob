@@ -1,0 +1,1 @@
+{"name":"Local: ReplaceZerosWithX","url":"/home/najam/Desktop/New Folder/Graphs/ReplaceZerosWithX.cpp","tests":[{"id":1688835736743,"input":"5 4\nX X X X\nX O X X\nX O O X\nX O X X\nX X O O","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/najam/Desktop/New Folder/Graphs/ReplaceZerosWithX.cpp","group":"local","local":true}
