@@ -3,7 +3,7 @@
 #include <vector>
 using namespace std;
 
-Graphs::Graphs(int nodes, int edges = 0)
+Graphs::Graphs(int nodes, int edges)
 {
     this->nodes = nodes;
     this->edges = edges;
