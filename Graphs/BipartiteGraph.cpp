@@ -38,7 +38,6 @@ int main()
     graph.buildGraphList();
 
     vector<int> color(nodes + 1, -1);
-    vector<bool> visited(nodes + 1, false);
     vector<vector<int>> adjList = graph.GetList();
 
     cout << CheckBipartite(0, color, adjList);
