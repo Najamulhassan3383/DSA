@@ -50,6 +50,7 @@ def minimax(board, depth, alpha, beta, player):
             if beta <= alpha:
                 break
         return best
+
     
 def bestMove(board, player):
     best_val = -1000
