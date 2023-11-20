@@ -1,113 +1,92 @@
-Winning_combinations = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[6,4,2],[0,4,8]]
+def evaluate(board):
+    # Check rows
+    for i in range(0, 9, 3):
+        if board[i] == board[i+1] == board[i+2] != '-':
+            return 1 if board[i] == 'X' else -1
+    # Check columns
+    for i in range(3):
+        if board[i] == board[i+3] == board[i+6] != '-':
+            return 1 if board[i] == 'X' else -1
+    # Check diagonals
+    if board[0] == board[4] == board[8] != '-' or board[2] == board[4] == board[6] != '-':
+        return 1 if board[4] == 'X' else -1
+    return 0
 
-Initial_board = ['-', '-', '-',
-                '-', '-', '-',
-                '-', '-', '-']
+def minimax(board, depth, alpha, beta, maximizingPlayer):
+    score = evaluate(board)
+    if score == 1:
+        return score - depth
+    if score == -1:
+        return score + depth
+    if '-' not in board:
+        return 0
+
+    if maximizingPlayer:
+        maxEval = -2
+        for i in range(0, 9):
+            if board[i] == '-':
+                board[i] = 'X'
+                eval = minimax(board, depth + 1, alpha, beta, False)
+                board[i] = '-'
+                maxEval = max(maxEval, eval)
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break
+        return maxEval
+    else:
+        minEval = 2
+        for i in range(0, 9):
+            if board[i] == '-':
+                board[i] = 'O'
+                eval = minimax(board, depth + 1, alpha, beta, True)
+                board[i] = '-'
+                minEval = min(minEval, eval)
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break
+        return minEval
+
+def bestMove(board, player):
+    value = -2
+    move = -1
+    for i in range(0, 9):
+        if board[i] == '-':
+            board[i] = player
+            moveValue = minimax(board, 0, -2, 2, 'O')
+            board[i] = '-'
+            if moveValue > value:
+                value = moveValue
+                move = i
+    return move
 
 
 def print_board(board):
-    for i in range(0, 9, 3):
-        print(board[i]," | ", board[i+1]," | ", board[i+2]," | ")
-    
-        
-        
-def checkWin(board):
-    for combination in Winning_combinations:
-        if board[combination[0]] == board[combination[1]] == board[combination[2]] != '-':
-            return True
-    return False
+    print(board[0:3])
+    print(board[3:6])
+    print(board[6:9])
 
-def neighbours(board, player):
-    boards = []
-    for i in range(9):
-        if board[i] == '-':
-            new_board = board.copy()
-            new_board[i] = player
-            boards.append(new_board)
-    return boards
-
-
-def minimax(board, depth, alpha, beta, player):
-    result = checkWin(board)
-    if result:
-        return result
-    if '-' not in board:
-        return 0
-    
-    if player == 'X':
-        best = -1000
-        for neighbour in neighbours(board, player):
-            best = max(best, minimax(neighbour, depth+1, alpha, beta, 'O'))
-            alpha = max(alpha, best)
-            if beta <= alpha:
-                break
-        return best
-    else:
-        best = 1000
-        for neighbour in neighbours(board, player):
-            best = min(best, minimax(neighbour, depth+1, alpha, beta, 'X'))
-            beta = min(beta, best)
-            if beta <= alpha:
-                break
-        return best
-
-    
-def bestMove(board, player):
-    best_val = -1000
-    best_move = -1
-    for i, neighbour in enumerate(neighbours(board, player)):
-        move_val = minimax(neighbour, 0, -1000, 1000, player)
-        if move_val > best_val:
-            best_move = i
-            best_val = move_val
-    
-    available_moves = [i for i, cell in enumerate(board) if cell == '-']
-    return available_moves[best_move]
-
-
-
-def take_input(board):
-    while True:
-        try:
-            pos = int(input("Enter the position: "))
-            if pos < 0 or pos > 8:
-                print("Enter a valid position")
-                continue
-            if board[pos] != '-':
-                print("Position already taken")
-                continue
-            break
-        except ValueError:
-            print("Enter a valid position")
-    return pos
-
-# player one is computer using minimax
-def user1Move(board):
-    pos = bestMove(board, 'X')
-    board[pos] = 'X'
-    return board
-
-def user2Move(board):
-    pos = take_input(board)
-    board[pos] = 'O'
-    return board
-
-print_board(Initial_board)
+# Test the functions with a game
+# Test the functions with a game
+board = ['-' for _ in range(9)]
+player = 'X'
 while True:
-    Initial_board = user1Move(Initial_board)
-    print_board(Initial_board)
-    if checkWin(Initial_board):
-        print("User 1 wins")
+    print_board(board)
+    if '-' not in board:
+        print("Draw!")
         break
-    if '-' not in Initial_board:
-        print("Draw")
-        break
-    
-    Initial_board = user2Move(Initial_board)
-    print_board(Initial_board)
-    if checkWin(Initial_board):
-        print("User 2 wins")
-        break
-    if '-' not in Initial_board:
-        print("Draw")
-        break
+    if player == 'X':  # AI's turn
+        move = bestMove(board, player)
+        board[move] = player
+        if evaluate(board) != 0:
+            print(f"{player} wins!")
+            break
+    else:  # User's turn
+        move = int(input("Enter your move (0-8): "))
+        while board[move] != '-':
+            print("Invalid move. Try again.")
+            move = int(input("Enter your move (0-8): "))
+        board[move] = player
+        if evaluate(board) != 0:
+            print(f"{player} wins!")
+            break
+    player = 'O' if player == 'X' else 'X'
