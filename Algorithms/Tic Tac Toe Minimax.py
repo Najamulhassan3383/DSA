@@ -1,92 +1,126 @@
-def evaluate(board):
-    # Check rows
-    for i in range(0, 9, 3):
-        if board[i] == board[i+1] == board[i+2] != '-':
-            return 1 if board[i] == 'X' else -1
-    # Check columns
-    for i in range(3):
-        if board[i] == board[i+3] == board[i+6] != '-':
-            return 1 if board[i] == 'X' else -1
-    # Check diagonals
-    if board[0] == board[4] == board[8] != '-' or board[2] == board[4] == board[6] != '-':
-        return 1 if board[4] == 'X' else -1
-    return 0
+winning_combination = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]]
 
-def minimax(board, depth, alpha, beta, maximizingPlayer):
-    score = evaluate(board)
-    if score == 1:
-        return score - depth
-    if score == -1:
-        return score + depth
-    if '-' not in board:
-        return 0
+initial_state = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
 
-    if maximizingPlayer:
-        maxEval = -2
-        for i in range(0, 9):
-            if board[i] == '-':
+look_up_table = {'X': 1, 'O': -1, 'tie': 0}
+
+iteration = 0
+
+def print_board(state):
+    print('-------------')
+    print('| ' + state[0] + ' | ' + state[1] + ' | ' + state[2] + ' |')
+    print('-------------')
+    print('| ' + state[3] + ' | ' + state[4] + ' | ' + state[5] + ' |')
+    print('-------------')
+    print('| ' + state[6] + ' | ' + state[7] + ' | ' + state[8] + ' |')
+    print('-------------')
+    
+def check_winner(state):
+    for combination in winning_combination:
+        if state[combination[0]] == state[combination[1]] == state[combination[2]] != ' ':
+            return look_up_table[state[combination[0]]]
+        if ' ' not in state:
+            return look_up_table['tie']
+        
+    return None
+
+def user_turn(state):
+    
+    while True:
+        pos = int(input("enter position for O (0-8):"))
+        
+        #check if that postion is empty
+        if pos >=0 and pos <=8 and state[pos] == ' ':
+            state[pos] = 'O'
+            break
+        else:
+            print("invalid position is given")
+    return state
+
+
+def minimax(board,player):
+    winner = check_winner(board)
+    global iteration
+    # The `iteration` variable is used to keep track of the number of iterations or recursive calls
+    # made in the `minimax` function. It is initially set to 0 and is incremented by 1 each time the
+    # `minimax` function is called. The value of `iteration` can be printed at the end of the game to
+    # see how many iterations were performed during the AI's decision-making process.
+    iteration  = iteration +1
+    if(winner):
+        return winner
+    
+    if(player == 'X'):
+        pos = -1
+        value = -10000
+        for i in range(0,9):
+            if board[i] == ' ':
                 board[i] = 'X'
-                eval = minimax(board, depth + 1, alpha, beta, False)
-                board[i] = '-'
-                maxEval = max(maxEval, eval)
-                alpha = max(alpha, eval)
-                if beta <= alpha:
-                    break
-        return maxEval
-    else:
-        minEval = 2
-        for i in range(0, 9):
-            if board[i] == '-':
+                score = minimax(board, 'O')
+                board[i] = ' '
+                if(score > value):
+                    value = score
+                    pos = i
+        return value
+    if player == 'O':
+        pos = -1
+        value = 10000
+        for i in range(0,9):
+            if board[i] == ' ':
                 board[i] = 'O'
-                eval = minimax(board, depth + 1, alpha, beta, True)
-                board[i] = '-'
-                minEval = min(minEval, eval)
-                beta = min(beta, eval)
-                if beta <= alpha:
-                    break
-        return minEval
+                score = minimax(board, 'X')
+                board[i] = ' '
+                if(score < value):
+                    value = score
+                    pos = i
+        return value
 
-def bestMove(board, player):
-    value = -2
-    move = -1
-    for i in range(0, 9):
-        if board[i] == '-':
-            board[i] = player
-            moveValue = minimax(board, 0, -2, 2, 'O')
-            board[i] = '-'
-            if moveValue > value:
-                value = moveValue
-                move = i
-    return move
+#deciding move for the AI
+def best_move(state):
+    state_copy = state.copy()
+    value = -100000
+    pos = -1
+    for i in range(0,9):
+        #check if it is an empty state
+        if(state_copy[i] == ' '):
+            state_copy[i] = "X"
+            local_cost = minimax(state_copy,"O")
+            state_copy[i] = ' '
+            
+            if value <= local_cost:
+                value = local_cost
+                pos = i
+                
+    return pos
+             
+    
 
 
-def print_board(board):
-    print(board[0:3])
-    print(board[3:6])
-    print(board[6:9])
-
-# Test the functions with a game
-# Test the functions with a game
-board = ['-' for _ in range(9)]
-player = 'X'
-while True:
-    print_board(board)
-    if '-' not in board:
-        print("Draw!")
-        break
-    if player == 'X':  # AI's turn
-        move = bestMove(board, player)
-        board[move] = player
-        if evaluate(board) != 0:
-            print(f"{player} wins!")
+def game(state):
+    while True:
+        print_board(state)
+        state = user_turn(state)
+        print_board(state)
+        if(check_winner == 0):
+            print("Tie")
             break
-    else:  # User's turn
-        move = int(input("Enter your move (0-8): "))
-        while board[move] != '-':
-            print("Invalid move. Try again.")
-            move = int(input("Enter your move (0-8): "))
-        board[move] = player
-        if evaluate(board) != 0:
-            print(f"{player} wins!")
+        winning_state = (check_winner(state))
+        if winning_state == -1:
+            print(winning_state)
+            print("O wins the game")
             break
-    player = 'O' if player == 'X' else 'X'
+        
+        ai_pos = best_move(state)
+        state[ai_pos] = "X"
+        
+        print_board(state)
+        
+        winning_state = (check_winner(state))
+        if winning_state == 1:
+            print("X has won")
+            break
+    return None
+
+
+game(initial_state)
+print(iteration)
+    
