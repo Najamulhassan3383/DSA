@@ -48,7 +48,7 @@ def findOrder(self, alien_dict):
             return ""
 
     result.reverse()
-    return "".join(result)
+    return result
 
 alien_dict = ['baa', 'abcd', 'abca', 'cab', 'cad']
 result = findOrder(None, alien_dict)
