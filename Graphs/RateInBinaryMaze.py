@@ -2,31 +2,7 @@ from typing import List
 from heapq import heappop, heappush
 
 class Solution:
-    def dijkstra(self, V, adj, S):
-        """ Dijkstra's algorithm to find the shortest path from source vertex to all other vertices
-        Args:
-            V (int):number of edges
-            adj (list[list]): adjacency list
-            S (list []):  source coordinates
-        """
-        heap = [(0, S)]
-        visited = set()
-        distances = [float('inf') for _ in range(V)]
-        
-        while heap:
-            dis , node = heappop(heap)
-            
-            visited.add(node)
-            
-            #explore the neibhours fo the node
-            
-            for i in range(4):
-                if neibhour not in visited:
-                    if dis + weight < distances[neibhour]:
-                        distances[neibhour] = dis + weight
-                        heappush(heap,(dis + weight,neibhour))
-                        
-        return distances
+    
     
     def shortestPath(self, grid: List[List[int]], source: List[int], destination: List[int]) -> int:
         """find the shortest path from source to destination
