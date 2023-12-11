@@ -8,7 +8,11 @@ class Solution:
         """
         m  = len(a)  #rows
         n = len(a[0]) #columns
-        #make a distace matrix to store the distance of each node from source
+        #make a distace matrix to store the distance of each node from source , initilize it to infinty for each node
+        
+        
+        
+        
         distance = [[float('inf') for _ in range(n)] for _ in range(m)]
         heap = []
         destination = [m-1,n-1]
